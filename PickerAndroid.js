@@ -479,14 +479,26 @@ const PickerAndroid = (props?: Props) => {
     const h = e < 10 ? `0${e}` : `${e}`;
     const h12 = type === 'PM' ? e + 12 : e;
     const m = minute < 10 ? `0${minute}` : `${minute}`;
+    const maxH24 = maxHour24 < 10 ? `0${maxHour24}` : `${maxHour24}`;
+    const minH24 = minHour24 < 10 ? `0${minHour24}` : `${minHour24}`;
     const maxH = maxHour12 < 10 ? `0${maxHour12}` : `${maxHour12}`;
     const minH = minHour12 < 10 ? `0${minHour12}` : `${minHour12}`;
     const maxM = maxMinute < 10 ? `0${maxMinute}` : `${maxMinute}`;
     const minM = minMinute < 10 ? `0${minMinute}` : `${minMinute}`;
 
     if (is24h) {
-      setHour24(e);
-      onChangeTime(`${h}:${m}`);
+      if (e > maxHour24 || (e === maxHour24 && minute > maxMinute)) {
+        setHour24(maxHour24);
+        setMinute(maxMinute);
+        onChangeTime(`${maxH24}:${maxM}`);
+      } else if (e < minHour24 || (e === minHour24 && minute < minMinute)) {
+        setHour24(minHour24);
+        setMinute(minMinute);
+        onChangeTime(`${minH24}:${minM}`);
+      } else {
+        setHour24(e);
+        onChangeTime(`${h}:${m}`);
+      }
     } else {
       if (h12 > maxHour24 || (h12 === maxHour24 && minute > maxMinute)) {
         setHour12(maxHour12);
